@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'Hisporique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1a1714;
+    --cream:#f2ede2;
+    --paper:#faf7ef;
+    --sepia:#5c4f45;
+    --sepia-light:#a89a8c;
+    --rule:#d8cfc0;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Newsreader', serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+
+  header{ background:var(--paper); border-bottom:3px solid var(--ink); }
+  .masthead-wrap{ max-width:1100px; margin:0 auto; padding:20px 24px 14px; text-align:center; }
+  .masthead-logo{ max-width:340px; width:70%; height:auto; }
+  nav{ background:var(--ink); }
+  nav ul{
+    max-width:1100px; margin:0 auto; padding:0 24px; list-style:none;
+    display:flex; gap:28px; flex-wrap:wrap; justify-content:center;
+  }
+  nav a{
+    display:block; padding:13px 2px; color:var(--cream); text-decoration:none;
+    font-family:'Space Mono', monospace; font-size:12px; letter-spacing:0.14em;
+    text-transform:uppercase; border-bottom:2px solid transparent;
+  }
+  nav a:hover{ border-color:var(--sepia-light); }
+
+  main{ max-width:720px; margin:0 auto; padding:40px 24px 60px; }
+  .back{
+    font-family:'Space Mono', monospace; font-size:11px; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--sepia); text-decoration:none;
+    display:inline-block; margin-bottom:22px;
+  }
+  .cat{
+    font-family:'Space Mono', monospace; font-size:11px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--sepia);
+  }
+  h1{
+    font-family:'Fraunces', serif; font-weight:900; font-size:clamp(1.8rem, 5vw, 2.8rem);
+    line-height:1.06; margin:10px 0 16px;
+  }
+  .byline{
+    font-family:'Space Mono', monospace; font-size:11px; color:var(--sepia);
+    text-transform:uppercase; letter-spacing:0.06em; margin-bottom:26px;
+    border-bottom:1px solid var(--rule); padding-bottom:20px;
+  }
+  .body-text p{ font-size:1.1rem; line-height:1.7; margin:0 0 20px; }
+
+  footer{ background:var(--ink); color:var(--cream); margin-top:20px; }
+  .footer-in{
+    max-width:1100px; margin:0 auto; padding:30px 24px; display:flex;
+    justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+    font-family:'Space Mono', monospace; font-size:11px; letter-spacing:0.05em;
+    color:var(--sepia-light);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="masthead-wrap">
+    <a href="index.html"><img class="masthead-logo" src="logo.jpg" alt="L'Hisporique"></a>
+  </div>
+  <nav>
+    <ul>
+      <li><a href="index.html#une-section">Accueil</a></li>
+      <li><a href="index.html#football">Football</a></li>
+      <li><a href="index.html#autres-sports">Autres sports</a></li>
+      <li><a href="index.html#actu">Actu</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="article-main">
+  <a class="back" href="index.html">&larr; Retour à l'accueil</a>
+  <p>Chargement…</p>
+</main>
+
+<footer>
+  <div class="footer-in">
+    <span>L'Hisporique</span>
+    <span>Site créé par toi, avec un coup de main de Claude pour le code</span>
+  </div>
+</footer>
+
+<script src="articles.js"></script>
+<script>
+  function formatDate(iso){
+    const parts = iso.split('-');
+    const date = new Date(parts[0], parts[1]-1, parts[2]);
+    return date.toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  const article = articles.find(a => a.id === id);
+  const main = document.getElementById('article-main');
+
+  if (!article) {
+    main.innerHTML += '<p>Cet article n\'existe pas (ou plus).</p>';
+  } else {
+    const paragraphs = article.content.split(/\n\s*\n/).map(p => `<p>${p.trim()}</p>`).join('');
+    main.innerHTML = `
+      <a class="back" href="index.html">&larr; Retour à l'accueil</a>
+      <p class="cat">${article.category}</p>
+      <h1>${article.title}</h1>
+      <p class="byline">Par ${article.author} — ${formatDate(article.date)}</p>
+      <div class="body-text">${paragraphs}</div>
+    `;
+    document.title = article.title + " — L'Hisporique";
+  }
+</script>
+
+</body>
+</html>
